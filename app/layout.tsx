@@ -5,7 +5,7 @@ import Navbar from "@/components/NavBar";
 
 export const metadata: Metadata = {
   title: "Banana Gallery",
-  description: "Personal AI Art Collection",
+  description: "Personal Collection",
 };
 
 export default function RootLayout({
@@ -15,9 +15,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="antialiased bg-white text-black">
+      <body className="antialiased bg-white text-black max-w-7xl px-4">
         <Navbar />
-        {children}
+        <main className="mx-auto">{children}</main>
         <Toaster position="bottom-center" />
       </body>
     </html>

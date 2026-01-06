@@ -1,20 +1,33 @@
 "use client";
 import { CldUploadWidget } from "next-cloudinary";
 import { useState } from "react";
+import toast from "react-hot-toast";
+import { verifyPin } from "../actions/verifyPin";
 
 export default function UploadPage() {
-  const [imageUrl, setImageUrl] = useState("");
+  const [pin, setPin] = useState<string>("");
+  const [isAuthorized, setIsAuthorized] = useState(false);
   const [status, setStatus] = useState<
     "idle" | "loading" | "success" | "error"
   >("idle");
+
+  const checkPin = async () => {
+    const isValid = await verifyPin(pin);
+    if (isValid) {
+      setIsAuthorized(true);
+      toast.success("PIN Verified!");
+    } else {
+      toast.error("Incorrect PIN");
+    }
+  };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleUploadSuccess = async (result: any) => {
     if (!result.info?.secure_url) return;
 
     const uploadedUrl = result.info.secure_url;
-    setImageUrl(uploadedUrl);
     console.log("Securely Uploaded to Cloudinary:", uploadedUrl);
+    toast.success("Securely Uploaded to Cloudinary");
 
     // Automatically save to DB
     setStatus("loading");
@@ -28,8 +41,6 @@ export default function UploadPage() {
       if (!res.ok) throw new Error("Failed to save post to DB");
 
       setStatus("success");
-      // Optional: Clear status after a delay if you want,
-      // but keeping "Success" visible is good feedback.
       setTimeout(() => setStatus("idle"), 3000);
     } catch (error) {
       console.error("Database Save Error:", error);
@@ -37,10 +48,32 @@ export default function UploadPage() {
     }
   };
 
-  return (
-    <div className="flex flex-col gap-4 p-5 max-w-md mx-auto">
-      <h1 className="text-2xl font-bold">Upload a New Image</h1>
+  if (!isAuthorized) {
+    return (
+      <div className="flex flex-col gap-4 max-w-sm mx-auto p-8 mt-10 border rounded-xl shadow-sm bg-white dark:bg-zinc-900">
+        <h2 className="text-xl font-bold text-center">Enter Access PIN</h2>
+        <div className="flex gap-2">
+          <input
+            type="password"
+            className="flex-1 bg-gray-100 dark:bg-zinc-800 p-2 rounded border border-gray-200 dark:border-zinc-700"
+            placeholder="PIN"
+            value={pin}
+            onChange={(e) => setPin(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && checkPin()}
+          />
+          <button
+            onClick={checkPin}
+            className="bg-black dark:bg-white text-white dark:text-black px-4 py-2 rounded font-medium"
+          >
+            Enter
+          </button>
+        </div>
+      </div>
+    );
+  }
 
+  return (
+    <div className="flex flex-col gap-4 max-w-md mx-auto p-5">
       <CldUploadWidget
         uploadPreset="cld_upload"
         onSuccess={handleUploadSuccess}
@@ -51,43 +84,14 @@ export default function UploadPage() {
       >
         {({ open }) => (
           <button
-            className="p-2 bg-amber-200 text-black font-semibold rounded-sm hover:bg-amber-300 transition"
+            className="w-full py-4 bg-blue-600 text-white font-bold rounded-lg shadow-lg hover:bg-blue-700 hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2"
             onClick={() => open()}
             disabled={status === "loading"}
           >
-            {status === "loading" ? "Processing..." : "Upload Image"}
+            upload
           </button>
         )}
       </CldUploadWidget>
-
-      {status === "loading" && (
-        <p className="text-blue-600 font-medium animate-pulse">
-          Saving to database...
-        </p>
-      )}
-
-      {status === "success" && (
-        <p className="text-green-600 font-medium">
-          Image uploaded and saved successfully!
-        </p>
-      )}
-
-      {status === "error" && (
-        <p className="text-red-600 font-medium">
-          Something went wrong. Please try again.
-        </p>
-      )}
-
-      {imageUrl && (
-        <div className="mt-4">
-          <p className="mb-2 font-semibold">Preview:</p>
-          <img
-            src={imageUrl}
-            alt="Uploaded Preview"
-            className="w-full h-auto rounded shadow-md"
-          />
-        </div>
-      )}
     </div>
   );
 }
