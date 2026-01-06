@@ -22,7 +22,7 @@ export default function ImageCard({ post, isLarge }: ImageCardProps) {
     >
       <Image
         src={post.imageUrl}
-        alt="Uploaded image"
+        alt={"123"}
         fill
         sizes="(max-width: 768px) 100vw, 50vw"
         className="object-cover transition-transform duration-700 group-hover:scale-110"
