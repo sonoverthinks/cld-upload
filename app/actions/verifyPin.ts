@@ -1,4 +1,5 @@
 "use server";
+import { createSession } from "@/lib/session";
 
 export async function verifyPin(pin: string) {
   const correctPin = process.env.SECRET_PIN;
@@ -12,11 +13,15 @@ export async function verifyPin(pin: string) {
   const input = pin.trim();
   const secret = correctPin.trim();
 
+  const isMatch = input === secret;
+
   console.log(
-    `[VerifyPin] Input: "${input}" | Secret: "${secret}" | Match: ${
-      input === secret
-    }`
+    `[VerifyPin] Input: "${input}" | Secret: "${secret}" | Match: ${isMatch}`
   );
 
-  return input === secret;
+  if (isMatch) {
+    await createSession();
+  }
+
+  return isMatch;
 }
