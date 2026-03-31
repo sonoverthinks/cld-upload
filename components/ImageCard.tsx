@@ -70,7 +70,7 @@ export default function ImageCard({ post, isLarge, isAdmin }: ImageCardProps) {
         <button
           onClick={handleDelete}
           disabled={isDeleting}
-          className="absolute top-2 left-2 bg-red-500 hover:bg-red-600 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"
+          className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"
           title="Delete image"
         >
           <svg
