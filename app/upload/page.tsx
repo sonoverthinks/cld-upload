@@ -50,12 +50,12 @@ export default function UploadPage() {
 
   if (!isAuthorized) {
     return (
-      <div className="flex flex-col gap-4 max-w-sm mx-auto p-8 mt-10 border rounded-xl shadow-sm bg-white dark:bg-zinc-900">
+      <div className="flex flex-col gap-4 max-w-sm mx-auto p-8 mt-10 border rounded-xl shadow-sm bg-white">
         <h2 className="text-xl font-bold text-center">Enter Access PIN</h2>
         <div className="flex gap-2">
           <input
             type="password"
-            className="flex-1 bg-gray-100 dark:bg-zinc-800 p-2 rounded border border-gray-200 dark:border-zinc-700"
+            className="flex-1 bg-gray-100 p-2 rounded border border-gray-200"
             placeholder="PIN"
             value={pin}
             onChange={(e) => setPin(e.target.value)}
@@ -63,7 +63,7 @@ export default function UploadPage() {
           />
           <button
             onClick={checkPin}
-            className="bg-black dark:bg-white text-white dark:text-black px-4 py-2 rounded font-medium"
+            className="bg-black text-white px-4 py-2 rounded font-medium"
           >
             Enter
           </button>
@@ -84,7 +84,7 @@ export default function UploadPage() {
       >
         {({ open }) => (
           <button
-            className="w-full py-4 bg-blue-600 text-white font-bold rounded-lg shadow-lg hover:bg-blue-700 hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2"
+            className="w-full py-4 bg-blue-600 text-white font-bold rounded-lg shadow-lg hover:bg-blue-700 hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 hover:cursor-pointer"
             onClick={() => open()}
             disabled={status === "loading"}
           >
